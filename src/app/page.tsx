@@ -1,7 +1,6 @@
 'use client';
 
 import { ChangeEvent } from 'react';
-import "../app/global.scss";
 import "../app/style.scss";
 import { useGetDoughQuery } from '@/feature/rtkQuery';
 

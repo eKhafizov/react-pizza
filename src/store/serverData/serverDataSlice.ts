@@ -10,6 +10,11 @@ const InitialState : InitialStateType = {
 const serverDataSlice = createSlice({
   name: Namespace.serverData,
   initialState: InitialState,
-  reducers: {},
+  reducers: {
+    getAuth: (state, action: {payload: string}) => {
+      state.auth = action.payload;
+    }
+  },
 })
 export default serverDataSlice;
+export const {getAuth} = serverDataSlice.actions;
