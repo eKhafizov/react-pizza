@@ -3,19 +3,25 @@
 import { ChangeEvent } from 'react';
 import "../app/global.scss";
 import "../app/style.scss";
+import { useGetDoughQuery } from '@/feature/rtkQuery';
 
 
 
 
 export default function Home() {
 
+
+  const {data} = useGetDoughQuery();
+  
+
   const onSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
 
   const onChange = () => {
-
+    console.log(data)
   };
+
 
   return (
     <main className="content">
