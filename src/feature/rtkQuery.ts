@@ -1,8 +1,8 @@
 import Namespace from '@/store/namespace';
 import { getAuth } from '@/store/serverData/serverDataSlice';
 import { getToken, saveToken } from '@/utils/token';
-import { LoginType, OrderType } from '@/utils/types';
-import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
+import { OrderType } from '@/utils/types';
+import { createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 const PizzaAPI = createApi({
   reducerPath: Namespace.queryData,
@@ -74,19 +74,28 @@ const PizzaAPI = createApi({
     }),
     postLogin: builder.mutation<
       {id: number; email: string; token: string},
-      {email: string; password: string}>({
-      query: ({email, password}) => ({
+      {id : string , name: string, email: string, avatar: string, phone: string, password: string}>({
+      query: ({id, name, email, avatar, phone, password}) => ({
         url: '/login',
         method: 'POST',
-        body: {email, password}
+        body: {id, name, email, avatar, phone, password}
       }),
       async onQueryStarted(_arg, {dispatch, queryFulfilled}) {
           const {data: {token}} = await queryFulfilled;
           saveToken(token);
-          dispatch(getAuth(token));
+          dispatch(getAuth('AUTH'));
           //dispatch(getUserInfo)\
       },
     }),
+
+//     id	string
+// name*	string
+// email*	string
+// avatar	string
+// phone*	string
+// password*	string
+
+
     postAddresses: builder.mutation<
       void, 
       {name : string, userId: string,street : string, building : string, flat: string,comment: string}>({
@@ -106,8 +115,6 @@ const PizzaAPI = createApi({
         body: {name, userId,street, building, flat,comment} 
       }),
     }),
-
-
     })
   })
 export default PizzaAPI;

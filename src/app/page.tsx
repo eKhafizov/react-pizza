@@ -2,25 +2,25 @@
 
 import { ChangeEvent } from 'react';
 import "../app/style.scss";
-import { useGetDoughQuery } from '@/feature/rtkQuery';
-
+import { usePostLoginMutation } from '@/feature/rtkQuery';
 
 
 
 export default function Home() {
-
-
-  const {data} = useGetDoughQuery();
-  
-
+  const [postLogin] = usePostLoginMutation();
   const onSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
 
   const onChange = () => {
-    console.log(data)
+    postLogin({
+      id : '666' ,
+      name: 'devil',
+      email: 'devil@devil.ru',
+      avatar: 'no',
+      phone: '6666666666',
+      password: 'devilPass'});
   };
-
 
   return (
     <main className="content">
