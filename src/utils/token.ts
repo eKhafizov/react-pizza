@@ -1,12 +1,17 @@
 
-const API_KEY = 'vue-work-auth-key';
+const AUTH_TOKEN_NAME = 'what-to-watch';
 
-export const getToken = () => {
-  return localStorage.getItem(API_KEY)
+export type TokenType = string;
+
+export const getToken = () : TokenType => {
+  const token = localStorage.getItem(AUTH_TOKEN_NAME);
+  return token ?? '';
 };
-export const saveToken = (token : string) => {
-  return localStorage.setItem(API_KEY, token)
+
+export const saveToken = (token: TokenType) : void => {
+  localStorage.setItem(AUTH_TOKEN_NAME, token);
 };
-export const dropToken = () => {
-  return localStorage.removeItem(API_KEY)
-}
+
+export const dropToken = () : void => {
+  localStorage.removeItem(AUTH_TOKEN_NAME);
+};

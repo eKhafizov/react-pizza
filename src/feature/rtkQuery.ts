@@ -1,7 +1,6 @@
 import Namespace from '@/store/namespace';
 import { getAuth } from '@/store/serverData/serverDataSlice';
 import { getToken, saveToken } from '@/utils/token';
-import { OrderType } from '@/utils/types';
 import { createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 const PizzaAPI = createApi({
@@ -11,7 +10,7 @@ const PizzaAPI = createApi({
     prepareHeaders: (headers) => {
       const token = getToken();
       if (token) {
-        headers.set('x-token', `${token}`)
+        headers.set('authentication', `Bearer ${token}`);
       }
       return headers;
     }
@@ -23,7 +22,7 @@ const PizzaAPI = createApi({
     getDough: builder.query<void, void>({
       query: () => '/dough'
     }),
-    getIngredients: builder.query<void, void>({
+    getIngredients: builder.query<{Id: number, image: string; name: string, price: number}[], void>({
       query: () => '/ingredients'
     }),
     getAddresses: builder.query<void, void>({
@@ -65,8 +64,70 @@ const PizzaAPI = createApi({
     }),
 
     //post
-    postOrder: builder.mutation<void, OrderType>({
-      query: (order : OrderType) => ({
+    postOrder: builder.mutation<
+      void, {
+  "userId": "string",
+  "phone": "+7 999-999-99-99",
+  "address": {
+    "street": "string",
+    "building": "string",
+    "flat": "string",
+    "comment": "string"
+  },
+  "pizzas": [
+    {
+      "name": "string",
+      "sauceId": 0,
+      "doughId": 0,
+      "sizeId": 0,
+      "quantity": 0,
+      "ingredients": [
+        {
+          "ingredientId": 0,
+          "quantity": 0
+        }
+      ]
+    }
+  ],
+  "misc": [
+    {
+      "miscId": 0,
+      "quantity": 0
+    }
+  ]
+}>({
+      query: (order : 
+        {
+          "userId": "string",
+          "phone": "+7 999-999-99-99",
+          "address": {
+            "street": "string",
+            "building": "string",
+            "flat": "string",
+            "comment": "string"
+          },
+          "pizzas": [
+            {
+              "name": "string",
+              "sauceId": 0,
+              "doughId": 0,
+              "sizeId": 0,
+              "quantity": 0,
+              "ingredients": [
+                {
+                  "ingredientId": 0,
+                  "quantity": 0
+                }
+              ]
+            }
+          ],
+          "misc": [
+            {
+              "miscId": 0,
+              "quantity": 0
+            }
+          ]
+        }) => ({
         url: `/orders`,
         method: 'POST',
         body: order
@@ -74,16 +135,17 @@ const PizzaAPI = createApi({
     }),
     postLogin: builder.mutation<
       {id: number; email: string; token: string},
-      {id : string , name: string, email: string, avatar: string, phone: string, password: string}>({
-      query: ({id, name, email, avatar, phone, password}) => ({
+      {email: string,password: string}>({
+      query: ({email, password}) => ({
         url: '/login',
         method: 'POST',
-        body: {id, name, email, avatar, phone, password}
+        body: {email, password}
       }),
-      async onQueryStarted(_arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted({email, password}, {dispatch, queryFulfilled}) {
           const {data: {token}} = await queryFulfilled;
           saveToken(token);
           dispatch(getAuth('AUTH'));
+          console.log('auth is ', email, password)
           //dispatch(getUserInfo)\
       },
     }),
